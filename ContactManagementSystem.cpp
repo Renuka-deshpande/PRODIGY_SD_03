@@ -8,7 +8,8 @@ using namespace std;
 class Contact
 {
 public:
-    string name;
+    string fname;
+    string lname;
     string phone;
     string email;
 };
@@ -75,7 +76,7 @@ void loadContacts()
     if (file.is_open())
     {
         Contact contact;
-        while (file >> contact.name >> contact.phone >> contact.email)
+        while (file >> contact.fname >> contact.lname >> contact.phone >> contact.email)
         {
             contacts.push_back(contact);
         }
@@ -88,7 +89,7 @@ void saveContacts()
     ofstream file("contact.txt");
     for (const auto &contact : contacts)
     {
-        file << contact.name << " " << contact.phone << " " << " " << contact.email << endl;
+        file << contact.fname << " " <<contact.lname << " " <<contact.phone << " " << " " << contact.email << endl;
     }
     file.close();
 }
@@ -96,8 +97,10 @@ void saveContacts()
 void addContact()
 {
     Contact contact;
-    cout << "\nEnter Name: ";
-    cin >> contact.name;
+    cout << "\nEnter first name: ";
+    cin >> contact.fname;
+     cout << "Enter last name: ";
+    cin >> contact.lname;
     cout << "Enter Phone Number: ";
     cin >> contact.phone;
     cout << "Enter Email: ";
@@ -117,22 +120,22 @@ void viewContacts()
     cout << "============================================\n";
     for (const auto &contact : contacts)
     {
-        cout << "Name: " << contact.name << "\nPhone: " << contact.phone << "\nEmail: " << contact.email << "\n";
+        cout << "first name: " << contact.fname <<"\nlast name: " << contact.lname << "\nPhone: " << contact.phone << "\nEmail: " << contact.email << "\n";
         cout << "--------------------------------------------\n";
     }
 }
 
 void searchContact()
 {
-    string name;
-    cout << "\nEnter Name to Search: ";
-    cin >> name;
-    auto it = find_if(contacts.begin(), contacts.end(), [&name](const Contact &c)
-                      { return c.name == name; });
+    string fname;
+    cout << "\nEnter first name of the Name to Search: ";
+    cin >> fname;
+    auto it = find_if(contacts.begin(), contacts.end(), [&fname](const Contact &c)
+                      { return c.fname == fname; });
 
     if (it != contacts.end())
     {
-        cout << "Name: " << it->name << "\nPhone: " << it->phone
+        cout << "first name: " << it->fname <<"last name: " << it->lname << "\nPhone: " << it->phone
              << "\nEmail: " << it->email << "\n";
     }
     else
@@ -143,11 +146,11 @@ void searchContact()
 
 void deleteContact()
 {
-    string name;
-    cout << "\nEnter Name to Delete: ";
-    cin >> name;
-    auto it = remove_if(contacts.begin(), contacts.end(), [&name](const Contact &c)
-                        { return c.name == name; });
+    string fname;
+    cout << "\nEnter first name of the Name to Delete: ";
+    cin >> fname;
+    auto it = remove_if(contacts.begin(), contacts.end(), [&fname](const Contact &c)
+                        { return c.fname == fname; });
 
     if (it != contacts.end())
     {
@@ -162,14 +165,14 @@ void deleteContact()
 
 void editContact()
 {
-    string nameToEdit;
-    cout << "\nEnter the Name of the Contact to Edit: ";
+    string fnameToEdit;
+    cout << "\nEnter the first name of the Contact to Edit: ";
     cin.ignore();
-    getline(cin, nameToEdit);
+    getline(cin, fnameToEdit);
 
-    // Search for the contact by name
-    auto it = find_if(contacts.begin(), contacts.end(), [&nameToEdit](const Contact &c)
-                      { return c.name == nameToEdit; });
+    // Search for the contact by fname
+    auto it = find_if(contacts.begin(), contacts.end(), [&fnameToEdit](const Contact &c)
+                      { return c.fname == fnameToEdit; });
 
     if (it != contacts.end())
     {
@@ -179,10 +182,11 @@ void editContact()
         do
         {
             cout << "\nWhat would you like to edit?";
-            cout << "\n[1] Name";
-            cout << "\n[2] Phone Number";
-            cout << "\n[3] Email";
-            cout << "\n[4] Exit Editing";
+            cout << "\n[1] first name";
+            cout << "\n[2] last name";
+            cout << "\n[3] Phone Number";
+            cout << "\n[4] Email";
+            cout << "\n[5] Exit Editing";
             cout << "\nEnter your choice: ";
             cin >> choice;
 
@@ -190,13 +194,21 @@ void editContact()
             {
             case 1:
             {
-                cout << "Enter the New Name: ";
+                cout << "Enter the New first name: ";
                 cin.ignore();
-                getline(cin, contactToEdit.name);
-                cout << "Name updated successfully!\n";
+                getline(cin, contactToEdit.fname);
+                cout << "fname updated successfully!\n";
                 break;
             }
-            case 2:
+              case 2:
+            {
+                cout << "Enter the New last name: ";
+                cin.ignore();
+                getline(cin, contactToEdit.lname);
+                cout << "last name updated successfully!\n";
+                break;
+            }
+            case 3:
             {
                 cout << "Enter the New Phone Number: ";
                 cin.ignore();
@@ -204,7 +216,7 @@ void editContact()
                 cout << "Phone Number updated successfully!\n";
                 break;
             }
-            case 3:
+            case 4:
             {
                 cout << "Enter the New Email: ";
                 cin.ignore();
@@ -212,19 +224,19 @@ void editContact()
                 cout << "Email updated successfully!\n";
                 break;
             }
-            case 4:
+            case 5:
                 cout << "Exiting edit menu...\n";
                 break;
             default:
                 cout << "Invalid choice, please try again.\n";
             }
-        } while (choice != 4);
+        } while (choice != 5);
 
         // Save the changes to the file
         ofstream outFile("contacts.txt", ios::out);
         for (const auto &contact : contacts)
         {
-            outFile << contact.name << "," << contact.phone << ","
+            outFile << contact.fname << "," << contact.phone << ","
                     << "," << contact.email << "\n";
         }
         outFile.close();
